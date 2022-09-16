@@ -22,9 +22,9 @@ from keras.preprocessing.image import ImageDataGenerator
 cam = cv2.VideoCapture(0)
 cam.set(3, 640) # ubah lebar cam
 cam.set(4, 480) # ubah tinggi cam
-faceDetector = cv2.CascadeClassifier('./haarcascade_frontalface_default.xml')
+faceDetector = cv2.CascadeClassifier('./expression_detection/haarcascade_frontalface_default.xml')
 # load model
-model = load_model("facial_emotions_model.h5")
+model = load_model("./expression_detection/facial_emotions_model.h5")
 
 # summarize model
 model.summary()
