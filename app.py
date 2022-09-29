@@ -1,3 +1,4 @@
+from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 import numpy as np
 import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
@@ -8,6 +9,8 @@ from flask import Flask, render_template, url_for, request
 import cv2
 from keras.models import load_model
 from PIL import Image
+import base64
+import io
 
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 from keras.preprocessing import image
@@ -24,57 +27,22 @@ app = Flask(__name__, template_folder="templates")
 
 @app.route("/", methods=["GET", "POST"])
 def hello_world():
+    return render_template("index.html")
+
+@app.route("/post/predict", methods=["GET", "POST"])
+def detect_faces():
     if request.method == "POST":
-        nama = request.form["email"]
-        return nama
 
-    return render_template("./index.html")
-
-@app.route('/get/predict', methods=["GET", "POST"])
-def take_inp():
-    data = request.form["email"]
-    gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-    for (x, y, w, h) in faces:
-        cv2.rectangle(data, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        roi_gray = gray[y:y+h, x:x+w]
-        roi_gray = cv2.resize(roi_gray, (48, 48), interpolation=cv2.INTER_AREA)
-        if np.sum([roi_gray]) != 0:
-            roi = roi_gray.astype("float") / 255.0
-            roi = img_to_array(roi)
-            roi = np.expand_dims(roi, axis=0)
-            preds = model.predict(roi)[0]
-            label = classes[preds.argmax()]
-            label_position= (x, y)
-            print(label)
-        else:
-            print("Not found")
-    return render_template("./halaman1.html")
-@app.route("/post/predict")
-def detect_faces(our_image):
-    img = np.array(our_image.convert('RGB'))
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    # Detect faces
-    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-    # Draw rectangle around the faces
-    name='Unknown'
-    for (x, y, w, h) in faces:
-        # To draw a rectangle in a face
-        cv2.rectangle(img, (x, y), (x + w, y + h), (255, 255, 0), 2)
-        roi_gray = gray[y:y+h, x:x+w]
-        roi_gray = cv2.resize(roi_gray, (48, 48), interpolation=cv2.INTER_AREA)
-        if np.sum([roi_gray]) != 0:
-            roi = roi_gray.astype("float") / 255.0
-            roi = img_to_array(roi)
-            roi = np.expand_dims(roi, axis=0)
-            preds = model.predict(roi)[0]
-            label = classes[preds.argmax()]
-            label_position= (x, y)
-            cv2.putText(img, label, label_position, cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
-        else:
-            cv2.putText(img, "No Face Found", (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 3)
-
-    return {"img": img, "predict": label}
+        img = request.files.get("file", "")
+        img = request.form["file"]
+    # test_image=image.load_img(img_path,target_size=(48,48),color_mode='grayscale')
+    # test_image=image.img_to_array(test_image)
+    # test_image=test_image.reshape(1,48,48,1)
+    # classes=['Angry','Disgust','Fear','Happy','Neutral','Sad','Surprise']
+    # result=model.predict(test_image)
+    # y_pred=np.argmax(result[0])
+    # print('The person facial emotion is:',classes[y_pred])
+    return render_template("halaman1.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
