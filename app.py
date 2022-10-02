@@ -10,7 +10,6 @@ from keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
-import cv2
 import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential
