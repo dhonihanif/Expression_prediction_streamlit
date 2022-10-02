@@ -50,7 +50,7 @@ elif option == 'Dataframe':
     sad = Image.open("./dataset2/train/train/sad/Training_2913.jpg")
     surprise = Image.open("./dataset2/train/train/surprise/Training_8796.jpg")
 
-    fig, ax = plt.subplots(2, 4, figsize=(10, 6), layout="constrained")
+    fig, ax = plt.subplots(2, 4, figsize=(10, 6))
     ax[0][0].imshow(angry)
     ax[0][1].imshow(disgust)
     ax[0][2].imshow(fear)
